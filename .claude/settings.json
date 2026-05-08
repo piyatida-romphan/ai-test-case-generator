@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/bee/Projects/ai-test-case-generator status)",
+      "Bash(git -C /Users/bee/Projects/ai-test-case-generator log --oneline -5)",
+      "Bash(git -C /Users/bee/Projects/ai-test-case-generator diff --stat HEAD)"
+    ]
+  }
+}

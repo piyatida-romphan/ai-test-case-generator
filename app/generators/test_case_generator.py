@@ -12,14 +12,14 @@ from app.prompts.test_case_prompt import SYSTEM_PROMPT, build_user_prompt
 from app.services.llm_service import call_llm, call_llm_placeholder
 
 
-def generate(user_story: str, use_placeholder: bool = False) -> str:
+def generate(user_story: str, use_placeholder: bool = False, provider: str = "openai") -> str:
     """
     Generate test cases for a given user story.
 
     Args:
         user_story:       The requirement or user story text.
-        use_placeholder:  If True, skip the real API call and return sample
-                          output. Handy during UI development.
+        use_placeholder:  If True, skip the real API call and return sample output.
+        provider:         LLM provider — "openai", "anthropic", or "gemini".
 
     Returns:
         Raw test case text produced by the LLM (or the placeholder).
@@ -33,4 +33,4 @@ def generate(user_story: str, use_placeholder: bool = False) -> str:
     if use_placeholder:
         return call_llm_placeholder(system_prompt, user_prompt)
 
-    return call_llm(system_prompt, user_prompt)
+    return call_llm(system_prompt, user_prompt, provider=provider)

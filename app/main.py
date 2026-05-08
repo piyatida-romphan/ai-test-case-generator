@@ -32,24 +32,52 @@ st.divider()
 # ---------------------------------------------------------------------------
 # Sidebar — settings
 # ---------------------------------------------------------------------------
+PROVIDER_INFO = {
+    "openai": {
+        "label": "OpenAI",
+        "key_var": "OPENAI_API_KEY",
+        "model_var": "OPENAI_MODEL",
+        "default_model": "gpt-4o-mini",
+    },
+    "anthropic": {
+        "label": "Anthropic Claude",
+        "key_var": "ANTHROPIC_API_KEY",
+        "model_var": "ANTHROPIC_MODEL",
+        "default_model": "claude-sonnet-4-6",
+    },
+    "gemini": {
+        "label": "Google Gemini",
+        "key_var": "GEMINI_API_KEY",
+        "model_var": "GEMINI_MODEL",
+        "default_model": "gemini-2.0-flash",
+    },
+}
+
 with st.sidebar:
     st.header("⚙️ Settings")
 
     use_placeholder = st.toggle(
         "Use placeholder (no API key needed)",
         value=True,
-        help="Turn off to use the real OpenAI API. Make sure OPENAI_API_KEY is set in .env",
+        help="Returns sample output instantly — no API key required. Great for testing the UI.",
     )
 
     if not use_placeholder:
-        st.info("Real API mode: ensure your .env file contains OPENAI_API_KEY.")
+        provider = st.selectbox(
+            "AI Provider",
+            options=list(PROVIDER_INFO.keys()),
+            format_func=lambda k: PROVIDER_INFO[k]["label"],
+        )
+        info = PROVIDER_INFO[provider]
+        st.info(f"Set `{info['key_var']}` in your `.env` file.\nDefault model: `{info['default_model']}`")
+    else:
+        provider = "openai"
 
     st.divider()
     st.markdown("**Model defaults**")
-    st.markdown("- Model: `gpt-4o-mini`")
     st.markdown("- Temperature: `0.3`")
     st.markdown("- Max tokens: `1500`")
-    st.caption("Edit these in `app/utils/config.py` or via .env.")
+    st.caption("Override via `.env` or `app/utils/config.py`.")
 
 # ---------------------------------------------------------------------------
 # Main form
@@ -71,7 +99,7 @@ if generate_btn:
     else:
         with st.spinner("Generating test cases..."):
             try:
-                raw_output = generate(user_story, use_placeholder=use_placeholder)
+                raw_output = generate(user_story, use_placeholder=use_placeholder, provider=provider)
                 robot_output = to_robot_file_content(raw_output, story_title=user_story[:60])
 
             except EnvironmentError as e:

@@ -5,6 +5,8 @@ uvicorn[standard]>=0.30.0
 
 # AI
 openai>=1.30.0
+anthropic>=0.25.0
+google-generativeai>=0.7.0
 
 # QA / Automation
 robotframework>=7.0
